@@ -1,6 +1,6 @@
 " Bara Tudor si firmele lui S.R.L
 
-"  git config --global credential.helper 'cache --timeout=86.400'
+"  git config --global credential.helper 'cache --timeout=86400'
 
 " Vim-Plug {{{
 set nocompatible
@@ -150,9 +150,6 @@ let g:NERDTreeWinSize = 25
 
 " Split this window
 nnoremap <leader>v <C-w>v<C-w>l
-
-" New line
-imap <s-cr> <esc>oi
 
 " Better ESC
 inoremap jk <Esc>`^
@@ -345,10 +342,10 @@ let g:indent_guides_enable_on_vim_startup = 1
 
 cmap w!! w !sudo tee % >/dev/null
 
-" Reload vimrc on save
-augroup reload_vimrc " {
-    autocmd!
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC | AirlineRefresh
-augroup END " }
+"" Reload vimrc on save
+"augroup reload_vimrc
+    "autocmd!
+    "autocmd BufWritePost $MYVIMRC source $MYVIMRC | AirlineRefresh
+"augroup END
 
 " }}}
