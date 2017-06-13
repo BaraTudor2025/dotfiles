@@ -40,7 +40,7 @@ Plug 'brooth/far.vim'
 
 " Edit
 "Plug 'terryma/vim-multiple-cursors'
-Plug 'scrooloose/nerdcommenter'
+Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'jiangmiao/auto-pairs'
@@ -96,7 +96,7 @@ call plug#end()
 syntax on       " Vim detecteaza automat limjaul folosit
 set ruler       " Info stanga jos, procente, line si coloana
 set nowrap
-set guicursor+=a:blinkon0 " Dezactiveaza flicareala
+set guicursor=   " set block cursor
 set history=1000 " istoric MARE
 set cursorline   " Highligth current line
 set nohlsearch   " highlight searched words
@@ -113,6 +113,8 @@ set scrolloff=2
 set encoding=utf-8
 set fileencoding=utf-8
 setlocal foldmethod=marker
+"set linespace=4
+set autochdir
 
 " Tab settings
 set expandtab
@@ -128,10 +130,16 @@ autocmd InsertLeave * set relativenumber
 " }}}
 
 
-" Mappings {{{
+" Mappings and Navigation {{{
 
 " Make leader space
 let mapleader="\<space>"
+
+" Disable Q(ex mode) and macro
+nmap Q <nop>
+nmap q <nop>
+
+nmap <c-p> :CtrlP ~<cr>
 
 " Install Plugs
 nmap <silent> <leader>ip :PlugInstall<cr>
@@ -153,9 +161,14 @@ nnoremap <leader>v <C-w>v<C-w>l
 
 " Better ESC
 inoremap jk <Esc>`^
+inoremap jj <Esc>`^
 
 " Easy column
 nnoremap ; :
+
+" Use tab in noraml mode to move between buffers
+nnoremap <tab> :bn<cr>
+nnoremap <s-tab> :bp<cr>
 
 " Insert a single character
 nmap <leader>i i<esc>r
@@ -173,11 +186,11 @@ map K 5k
 map H ^
 map L $
 
-" Split navigation
-nnoremap <c-j> <c-w><c-j>
-nnoremap <c-k> <c-w><c-k>
-nnoremap <c-l> <c-w><c-l>
-nnoremap <c-h> <c-w><c-h>
+"" Split navigation (not used because of tmux-navigator)
+"nnoremap <c-j> <c-w><c-j>
+"nnoremap <c-k> <c-w><c-k>
+"nnoremap <c-l> <c-w><c-l>
+"nnoremap <c-h> <c-w><c-h>
 
 " Edits wraped lines
 noremap j gj
@@ -204,7 +217,7 @@ map f <Plug>(easymotion-sl)
 map t <Plug>(easymotion-bd-tl)
 
 let g:EasyMotion_smartcase = 1
-"
+
 " }}}
 
 
@@ -217,10 +230,15 @@ highlight Visual cterm=bold ctermfg=12 ctermbg=0 gui=bold guifg=#839496 guibg=#0
 highlight IncSearch cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
 highlight Search cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
 
+
 "set t_Co=256
 "let g:solarized_termcolors=256
 "let g:rainbow#max_level = 16
 "let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+
+" pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
+"/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
+"unlet g:save_cpo
 
 exec 'source' '~/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim'
 
@@ -268,18 +286,9 @@ let g:deoplete#enable_at_startup = 1
 let g:deoplet#enable_camel_case = 1
 let g:deoplete#sources#clang#libclang_path = '/usr/lib64/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/include/c++/6.3.1'
-let g:deoplete#sources#clang#std = { 'cpp': 'c++1z' }
 
 autocmd InsertLeave * if pumvisible() == 0 | pclose | endif
 set completeopt-=preview
-
-
-imap <silent><expr><Tab> (pumvisible() ? "<C-n>" : (<SID>is_whitespace() ? "\<Tab>" : deoplete#manual_complete()))
-inoremap <expr><S-Tab>  pumvisible() ? "\<Up>" : "\<C-h>"
-
-"smap <silent><expr><Tab> pumvisible() ? "\<Down>"
-    "\ : (<SID>is_whitespace() ? "\<Tab>"
-	"\ : deoplete#manual_complete()))
 
 
 function! s:is_whitespace()
@@ -287,19 +296,20 @@ function! s:is_whitespace()
 	return ! col || getline('.')[col - 1] =~? '\s'
 endfunction
 
-"\ : (neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)"
-"let g:deoplete#max_menu_width = 10
-let g:deoplete#max_list = 10
+let g:deoplete#max_list = 20
 
 let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
 
+" Use leader + b to build current file in his directory
+nmap <silent><leader>b :cd %:h<cr> :Neomake!<cr> :!./a.out<cr>
+
 let g:neomake_open_list = 2
 let g:neomake_cpp_enabled_makers = ['clang']
 let g:neomake_cpp_clang_maker = {
     \ 'exe' : 'clang++',
-    \ 'args' : [ 'c++1z', '-Wc++11']
+    \ 'args' : [ '-std=c++1z', '-Wall', '-Wno-c++11-extensions']
     \ }
 
 let g:neomake_warning_sign = {
@@ -315,6 +325,9 @@ autocmd! BufWritePost,BufEnter * Neomake
 
 autocmd! FileType cpp ClangFormatAutoEnable
 
+imap <silent><expr><Tab> (pumvisible() ? "<C-n>" : (<SID>is_whitespace() ? "\<Tab>" : deoplete#manual_complete()))
+inoremap <expr><S-Tab>  pumvisible() ? "\<Up>" : "\<C-h>"
+
 " }}}
 
 
@@ -323,7 +336,8 @@ autocmd! FileType cpp ClangFormatAutoEnable
 let g:AutoPairs = { '(': ')', '[': ']', '{': '}', "'": "'", '"': '"'}
 let g:AutoPairsFlyMode = 0
 
-let g:session_autosave = 'no'
+let g:session_autosave = 'yes'
+let g:session_command_aliases = 1
 
 let g:hardtime_default_on = 1
 let g:hardtime_ignore_quickfix = 1
