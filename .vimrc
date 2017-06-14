@@ -32,6 +32,7 @@ nmap <silent> <leader>rv :source $MYVIMRC<cr>
 nmap <leader>i i<esc>r
 
 cmap w!! w !sudo tee % >/dev/null
+cmap qq q!
 
 nnoremap ; :
 
