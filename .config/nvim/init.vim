@@ -303,7 +303,7 @@ endfunction
 " }}}
 
 
-" Misc {{{
+" Mix {{{
 
 augroup vim_enter
     autocmd!
