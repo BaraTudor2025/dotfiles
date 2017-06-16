@@ -1,13 +1,11 @@
-set encoding=utf-8
-scriptencoding utf-8
-set fileencoding=utf-8
+setlocal foldmethod=marker
 
-"===============================================
-"======= Bara Tudor si firmele lui S.R.L. ======
-"===============================================
+" ===============================================
+" ======= Bara Tudor si firmele lui S.R.L. ======
+" ===============================================
 
 
-" PLUGINS WOOO {{{
+" Plugins {{{
 
 " install vim-plug on new machine
 if empty(glob('~/.config/nvim/plugged'))
@@ -34,7 +32,7 @@ Plug 'vim-scripts/ZoomWin'
 Plug 'mhinz/vim-startify'
 
 " Navigation
-Plug 'scrooloose/nerdtree' , { 'do' : 'NERDTreeCWD' }
+Plug 'scrooloose/nerdtree'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'easymotion/vim-easymotion'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -42,7 +40,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'brooth/far.vim'
 
 " Edit
-"Plug 'terryma/vim-multiple-cursors'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
@@ -57,14 +55,16 @@ Plug 'Shougo/neco-vim'
 
 " Autocomletion and Linters
 " Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
-Plug 'sirver/ultisnips'
+Plug 'SirVer/ultisnips'
+Plug 'neitanod/vim-clevertab'
+Plug 'honza/vim-snippets'
 Plug 'w0rp/ale'
 Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
 " Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
 " Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
 " Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
 
-" Disable hjkl and ohther useless shit
+" Disable hjkl and other useless shit
 Plug 'takac/vim-hardtime'
 
 " Removes trailing spaces
@@ -80,7 +80,7 @@ Plug 'xolox/vim-misc'
 " Reload scripts manually
 Plug 'xolox/vim-reload'
 
-" Terminal airline
+" Terminal powerline
 Plug 'edkolev/promptline.vim'
 Plug 'edkolev/tmuxline.vim'
 
@@ -92,25 +92,28 @@ call plug#end()
 
 " General settings {{{
 
-syntax on       " Vim detecteaza automat limjaul folosit
-set ruler       " Info stanga jos, procente, line si coloana
+set encoding=utf-8
+scriptencoding utf-8
+set fileencoding=utf-8
+
+syntax on
+set ruler
 set nowrap
-set guicursor=   " set block cursor
-set history=1000 " istoric MARE
-set cursorline   " Highligth current line
-set nohlsearch   " highlight searched words
-set noincsearch  " coloreaza cuvantul in timp real
-set guifont=Consolas:h13 " not working in terminal
+set history=1000
+set hidden      " change buffer without saving
+set cursorline  " highlight line
 set title       " change the terminal title
-set clipboard+=unnamedplus
+set guicursor=  " set block cursor
+set clipboard+=unnamedplus " use os clipboard
 set nolist
-"set listchars=tab:»·,trail:·
 set listchars=tab:▷⋅,trail:⋅,nbsp:⋅
 set nobackup
 set noswapfile
 set scrolloff=2
-setlocal foldmethod=marker
 set autochdir
+set pastetoggle=<leader>p
+
+set shell=/bin/bash
 
 " Tab settings
 set expandtab
@@ -119,196 +122,19 @@ set softtabstop=4
 set shiftwidth=4
 set shiftround
 
+set smartcase
+set nohlsearch
+set noincsearch
+set ignorecase
+set wildignorecase
+
 set number relativenumber
 augroup relative_num
     autocmd! InsertEnter * set norelativenumber
     autocmd! InsertLeave * set relativenumber
 augroup END
 
-" }}}
-
-
-" Mappings {{{
-
-" Make leader space
-let g:mapleader="\<space>"
-
-" Disable Q(ex mode) and macro
-nmap Q <nop>
-nmap q <nop>
-
-cmap w!! w !sudo tee % >/dev/null
-cmap qq q!
-
-nmap <c-p> :CtrlP ~<cr>
-
-" Install Plugs
-nmap <silent> <leader>ip :PlugInstall<cr>
-nmap <silent> <leader>up :PlugUpdate<cr>
-
-" Go fullscreen
-nmap <silent> <leader>z :ZoomWin<cr>
-
-" Edit this file
-nmap <silent> <leader>ev :e $MYVIMRC<cr>
-nmap <silent> <leader>rv :source $MYVIMRC<cr>
-
-" Open nerd tree with ctrl-n
-nmap <silent> <leader>n :NERDTreeCWD<cr>
-let g:NERDTreeWinSize = 25
-
-" Split this window
-nnoremap <leader>v <C-w>v<C-w>l
-
-" Better ESC
-inoremap jk <Esc>`^
-inoremap jj <Esc>`^
-
-" Easy column
-nnoremap ; :
-
-" Use tab in noraml mode to move between buffers
-nnoremap gn :bnext<cr>
-nnoremap gp :bprevious<cr>
-nnoremap gd :bdelete<cr>
-nnoremap gf <C-^>
-
-" Insert a single character
-nmap <leader>i i <esc>r
-
-" Insert semicolomn at end of line in insert mode
-inoremap ;; <esc>A;
-
-" Insert line
-nnoremap o o<ESC>
-nnoremap O O<ESC>
-
-" Faster navigation
-map J 5j
-map K 5k
-map H ^
-map L $
-
-" Edits wraped lines
-noremap j gj
-noremap k gk
-noremap <silent> 0 g0
-noremap <silent> ^ g^
-noremap <silent> $ g$
-
-" Easy motion mappings
-map s <Plug>(easymotion-bd-f)
-nmap s <Plug>(easymotion-overwin-f)
-
-map <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
-
-nmap <Leader>l <Plug>(easymotion-overwin-line)
-
-map f <Plug>(easymotion-sl)
-
-map t <Plug>(easymotion-bd-tl)
-
-let g:EasyMotion_smartcase = 1
-
-" }}}
-
-
-" Colors {{{
-
-set termguicolors
-set background=dark
-colorscheme NeoSolarized
-highlight Visual cterm=bold ctermfg=12 ctermbg=0 gui=bold guifg=#839496 guibg=#073642 guisp=#002b36
-highlight IncSearch cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
-highlight Search cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
-" highlight link Visual Folded
-" highlight link IncSearch DiffChange
-" highlight link Search DiffChange
-
-exec 'source' '~/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim'
-
-let g:solarized_termcolors=256
-let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
-
-augroup rainbow_lisp
-    autocmd!
-    autocmd FileType lisp, clojure, scheme RainbowParentheses
-augroup END
-
-" pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
-"/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
-"unlet g:save_cpo
-
-
-" C++ highlight
-let g:cpp_class_scope_highlight = 1
-let g:cpp_member_variable_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
-
-" Airline
-set laststatus=2
-let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
-let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
-let g:airline_theme='solarized'
-let g:airline_powerline_fonts = 1
-
-" Installation commands {{{
-"git clone https://github.com/powerline/fonts.git
-"cd fonts
-"./install.sh
-"cd ..
-"rm -rf fonts
-
-"wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-"wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-"mv PowerlineSymbols.otf ~/.fonts/
-"fc-cache -vf ~/.fonts/
-"mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
-" }}} install
-
-" }}}
-
-
-" ALE {{{
-
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = 'W'
-let g:ale_sign_collumn_always = 1
-let g:ale_set_loclist = 1
-let g:ale_set_quiqkfix = 0
-
-" let g:ale_lint_on_save = 'never'
-" let g:ale_lint_on_text_changed = 'never'
-
-nmap <silent><M-k> <Plug>(ale_previous_wrap)
-nmap <silent><M-j> <Plug>(ale_next_wrap)
-
-let g:ale_open_list = 0
-
-function! ToggleALEwin()
-    if g:ale_open_list == 0
-        g:ale_open_list = 1
-    else
-        g:ale_open_list = 0
-    endif
-endfunction
-
-" }}}
-
-
-" YouCompleteMe {{{
-" let g:ycm_global_ycm_extra_conf = '~/.config/nvim/.ycm_extra_conf.py'
-
-" }}}
-
-
-" Mix {{{
-
-augroup vim_enter
-    autocmd!
-    autocmd VimEnter * GitGutterSignsDisable
-augroup END
+" set guifont=Consolas:h13 " not working in terminal
 
 let g:gitgutter_sign_column_always = 1
 
@@ -344,6 +170,252 @@ function! ToggleWrap()
     endif
 endfunction
 
+" }}}
+
+
+" Mappings {{{
+
+let g:mapleader = "\<space>"
+let g:maplocalleader = ','
+
+" Insert a single character
+nmap <leader>i i <esc>r
+
+" Split this window
+nnoremap <leader>v <C-w>v<C-w>l
+
+" Install Plugs
+nmap <silent> <leader>ip :PlugInstall<cr>
+nmap <silent> <leader>up :PlugUpdate<cr>
+
+" Go fullscreen or use Goyo
+nmap <silent> <leader>z :ZoomWin<cr>
+
+" Edit this file
+nmap <silent> <leader>ev :e $MYVIMRC<cr>
+nmap <silent> <leader>rv :source $MYVIMRC<cr>
+
+" Open nerd tree with ctrl-n
+nmap <silent> <leader>n :NERDTreeCWD<cr>
+let g:NERDTreeWinSize = 25
+
+" Execute last command
+nmap Q @:
+
+" Disable macro
+" nmap q <nop>
+
+cmap w!! w !sudo tee % >/dev/null
+cmap qq q!
+
+" nnoremap <leader>b :ls<cr>:b<space>
+nnoremap <leader>b :Buffers<cr>
+
+" copy and paste a paragraph below
+noremap cp yap<S-}>p
+
+nnoremap F :FZF ~<cr>
+nnoremap <leader>f :FZF <cr>
+
+" Easy column
+nnoremap ; :
+
+" Better ESC
+inoremap jk <Esc>`^
+inoremap jj <Esc>`^
+
+" Better ESC
+inoremap jk <Esc>`^
+inoremap jj <Esc>`^
+
+" Delete a line in insert mode
+inoremap <c-d> <esc> ddi
+
+" Select last paste in visual mode
+nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" Insert semicolomn at end of line in insert mode
+inoremap ;; <esc>A;
+
+" Buffer movement
+nnoremap gn :bnext<cr>
+nnoremap gp :bprevious<cr>
+nnoremap gd :bdelete<cr>
+nnoremap gf <C-^>
+
+" Insert line
+nnoremap o o<ESC>
+nnoremap O O<ESC>
+
+" Faster navigation
+map J 5j
+map K 5k
+map H ^
+map L $
+
+" Align text blocks and keep them highlighted
+vmap < <gv
+vmap > >gv
+nmap < <<
+nmap > >>
+
+" Edits wraped lines
+noremap j gj
+noremap k gk
+noremap 0 g0
+noremap ^ g^
+noremap $ g$
+
+" Easy motion mappings
+map s <Plug>(easymotion-bd-f)
+nmap s <Plug>(easymotion-overwin-f)
+
+map <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+vmap <Leader>l <Plug>(easymotion-bd-jk)
+
+map f <Plug>(easymotion-sl)
+
+map t <Plug>(easymotion-bd-tl)
+
+let g:EasyMotion_smartcase = 1
+
+" }}}
+
+
+" Colors {{{
+
+set termguicolors
+set background=dark
+colorscheme NeoSolarized
+highlight Visual cterm=bold ctermfg=12 ctermbg=0 gui=bold guifg=#839496 guibg=#073642 guisp=#002b36
+highlight IncSearch cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
+highlight Search cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
+" highlight link Visual Folded
+" highlight link IncSearch DiffChange
+" highlight link Search DiffChange
+
+exec 'source' '~/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim'
+
+let g:solarized_termcolors=256
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+
+augroup rainbow_lisp
+    autocmd
+    autocmd FileType lisp, clojure, scheme RainbowParentheses
+augroup END
+
+
+" pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
+"/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
+"unlet g:save_cpo
+
+
+" C++ highlight
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_experimental_simple_template_highlight = 1
+
+" Airline
+set laststatus=2
+let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
+let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
+let g:airline_theme='solarized'
+let g:airline_powerline_fonts = 1
+
+
+" }}}
+
+
+" ALE {{{
+" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+" let g:SuperTabDefaultCompletionType = '<C-n>'
+"
+" " better key bindings for UltiSnipsExpandTrigger
+" let g:UltiSnipsExpandTrigger="<cr>"
+" let g:UltiSnipsJumpForwardTrigger="<c-j>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = 'W'
+let g:ale_sign_collumn_always = 1
+let g:ale_set_loclist = 1
+let g:ale_set_quiqkfix = 0
+
+" let g:ale_lint_on_save = 'never'
+" let g:ale_lint_on_text_changed = 'never'
+
+nmap <silent><M-k> <Plug>(ale_previous_wrap)
+nmap <silent><M-j> <Plug>(ale_next_wrap)
+
+let g:ale_open_list = 0
+
+function! ToggleALEwin()
+    if g:ale_open_list == 0
+        g:ale_open_list = 1
+    else
+        g:ale_open_list = 0
+    endif
+endfunction
+
+" }}}
+
+
+" YouCompleteMe {{{
+  " let g:ycm_global_ycm_extra_conf = '~/.config/nvim/.ycm_extra_conf.py'
+  " let g:ycm_autoclose_preview_window_after_completion = 1
+  " let g:ycm_seed_identifiers_with_syntax = 1
+  " let g:ycm_collect_identifiers_from_tags_files = 1
+  " let g:ycm_key_invoke_completion = '<c-j>'
+  " let g:ycm_complete_in_strings = 1
+" }}}
+
+
+" Autocommands {{{
+augroup vim_enter
+    autocmd!
+    autocmd VimEnter * GitGutterSignsDisable
+augroup END
+
+augroup buf_leave
+    autocmd!
+    " Mark the last editerd file
+    autocmd BufLeave *.cpp  normal! mC
+    autocmd BufLeave *.h    normal! mH
+    autocmd BufLeave *.hpp  normal! mH
+    autocmd BufLeave *.hs   normal! mL
+augroup END
+
+augroup buf_enter
+    autocmd!
+    autocmd BufRead * call ReadOnlyKeys()
+    autocmd BufReadPost * call CursorPos()
+    autocmd BufRead * :normal zz
+augroup END
+
+" Close vim if nerdtree is lonely
+" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
+
+
+function! ReadOnlyKeys()
+    if &readonly
+        noremap <buffer><nowait>d <c-d>
+        noremap <buffer>u <c-u>
+        noremap <buffer>f <c-f>
+        noremap <buffer>b <c-b>
+        noremap <buffer>h K
+        noremap <buffer>t <c-]> "follow tag
+    endif
+endfunction
+
+fun! CursorPos()
+    if line("'\"") > 0 && line ("'\"") <= line ('$')
+        execute "normal! g'\""
+    endif
+endfun
 " }}}
 
 

@@ -1,4 +1,10 @@
+" ===============================================
+" ======= Bara Tudor si firmele lui S.R.L. ======
+" ===============================================
 
+set encoding=utf-8
+scriptencoding utf-8
+set fileencoding=utf-8
 set nocompatible
 
 syntax on
@@ -21,8 +27,9 @@ set noswapfile
 set scrolloff=2
 set encoding=utf-8
 set fileencoding=utf-8
-setlocal foldmethod=marker
+set foldmethod=marker
 set laststatus=2
+set hidden
 
 " Edit this file
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
@@ -36,13 +43,33 @@ cmap qq q!
 
 nnoremap ; :
 
+colorscheme desert
+
+set wildmenu
+set wildmode=list:full,full
+
+" Split this window
+nnoremap <leader>v <C-w>v<C-w>l
+
 imap jk <esc>`^
+
+" Faster navigation
+map J 5j
+map K 5k
+map H ^
+map L $
 
 " Split navigation
 nnoremap <c-j> <c-w><c-j>
 nnoremap <c-k> <c-w><c-k>
 nnoremap <c-l> <c-w><c-l>
 nnoremap <c-h> <c-w><c-h>
+
+" Align text blocks and keep them highlighted
+vmap < <gv
+vmap > >gv
+nmap < <<
+nmap > >>
 
 " Insert line
 nnoremap o o<ESC>
@@ -51,23 +78,38 @@ nnoremap O O<ESC>
 " Edits wraped lines
 noremap j gj
 noremap k gk
-noremap <silent> 0 g0
-noremap <silent> ^ g^
-noremap <silent> $ g$
+noremap 0 g0
+noremap ^ g^
+noremap $ g$
 
 set number relativenumber
-autocmd InsertEnter * set norelativenumber
-autocmd InsertLeave * set relativenumber
+augroup relative_num
+    autocmd! InsertEnter * set norelativenumber
+    autocmd! InsertLeave * set relativenumber
+augroup END
 
-" Split this window
-nnoremap <leader>v <C-w>v<C-w>l
-
-" Faster navigation
-map J 5j
-map K 5k
-map H ^
-map L $
+augroup buf_enter
+    autocmd!
+    autocmd BufRead * call ReadOnlyKeys()
+    autocmd BufReadPost * call CursorPos()
+    autocmd BufRead * :normal zz
+augroup END
 
 
-autocmd! BufWrite $MYVIMRC source $MYVIMRC
+function! ReadOnlyKeys()
+    if &readonly
+        noremap <buffer><nowait>d <c-d>
+        noremap <buffer>u <c-u>
+        noremap <buffer>f <c-f>
+        noremap <buffer>b <c-b>
+        noremap <buffer>h K
+        noremap <buffer>t <c-]> "follow tag
+    endif
+endfunction
+
+fun! CursorPos()
+    if line("'\"") > 0 && line ("'\"") <= line ('$')
+        execute "normal! g'\""
+    endif
+endfun
 
