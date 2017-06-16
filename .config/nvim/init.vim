@@ -1,4 +1,4 @@
-setlocal foldmethod=marker
+set foldmethod=marker
 
 " ===============================================
 " ======= Bara Tudor si firmele lui S.R.L. ======
@@ -11,20 +11,15 @@ setlocal foldmethod=marker
 if empty(glob('~/.config/nvim/plugged'))
     !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
+    autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-" GitHub integration
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-
 " Visuals
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'iCyMind/NeoSolarized'
-"Plug 'yuttie/comfortable-motion.vim'
+
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/goyo.vim'
 "Plug 'nathanaelkane/vim-indent-guides'
@@ -43,12 +38,18 @@ Plug 'brooth/far.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
+Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-repeat'
 Plug 'jiangmiao/auto-pairs'
-"Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-abolish'
 "Plug 'godlygeek/tabular'
 
 " Syntax highlight
+Plug 'iCyMind/NeoSolarized'
+Plug 'vim-scripts/asu1dark.vim'
+Plug 'felixhummel/setcolors.vim'
+Plug 'flazz/vim-colorschemes'
+Plug 'rakr/vim-one'
 Plug 'octol/vim-cpp-enhanced-highlight' , { 'for' : 'cpp' }
 Plug 'mizuchi/stl-syntax' , { 'for' : 'cpp' }
 Plug 'Shougo/neco-vim'
@@ -63,6 +64,10 @@ Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
 " Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
 " Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
 " Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
+
+" GitHub integration
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 " Disable hjkl and other useless shit
 Plug 'takac/vim-hardtime'
@@ -112,7 +117,8 @@ set noswapfile
 set scrolloff=2
 set autochdir
 set pastetoggle=<leader>p
-
+set nohlsearch
+set noincsearch
 set shell=/bin/bash
 
 " Tab settings
@@ -123,8 +129,6 @@ set shiftwidth=4
 set shiftround
 
 set smartcase
-set nohlsearch
-set noincsearch
 set ignorecase
 set wildignorecase
 
@@ -161,6 +165,9 @@ let g:lessspace_blacklist = ['*']
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
+
+" let g:user_emmet_install_global = 0
+autocmd Filetype html, css EmmetInstall
 
 function! ToggleWrap()
     if &wrap
@@ -202,13 +209,9 @@ let g:NERDTreeWinSize = 25
 " Execute last command
 nmap Q @:
 
-" Disable macro
-" nmap q <nop>
-
 cmap w!! w !sudo tee % >/dev/null
 cmap qq q!
 
-" nnoremap <leader>b :ls<cr>:b<space>
 nnoremap <leader>b :Buffers<cr>
 
 " copy and paste a paragraph below
@@ -216,13 +219,11 @@ noremap cp yap<S-}>p
 
 nnoremap F :FZF ~<cr>
 nnoremap <leader>f :FZF <cr>
+" let $FZF_DEFAULT_COMMAND = 'find . -type f'
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
 " Easy column
 nnoremap ; :
-
-" Better ESC
-inoremap jk <Esc>`^
-inoremap jj <Esc>`^
 
 " Better ESC
 inoremap jk <Esc>`^
@@ -287,26 +288,29 @@ let g:EasyMotion_smartcase = 1
 
 " Colors {{{
 
+
 set termguicolors
 set background=dark
-colorscheme NeoSolarized
-highlight Visual cterm=bold ctermfg=12 ctermbg=0 gui=bold guifg=#839496 guibg=#073642 guisp=#002b36
-highlight IncSearch cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
-highlight Search cterm=bold ctermfg=3 ctermbg=0 gui=bold guifg=#b58900 guibg=#073642 guisp=#b58900
-" highlight link Visual Folded
-" highlight link IncSearch DiffChange
-" highlight link Search DiffChange
+colorscheme gruvbox
+highlight! link Visual Folded
+highlight! link IncSearch DiffChange
+highlight! link Search DiffChange
 
-exec 'source' '~/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim'
+highlight! EasyMotionTargetDefault          cterm=bold ctermfg=196 gui=bold guifg=#ff0000
+highlight! EasyMotionTarget2FirstDefault    cterm=bold ctermfg=11 gui=bold guifg=#ffb400
+highlight! EasyMotionTarget2SecondDefault   cterm=bold ctermfg=3 gui=bold guifg=#b98300
+highlight! EasyMotionMoveHLDefault          cterm=bold ctermfg=15 ctermbg=10 gui=bold guifg=#121813 guibg=#7fbf00
+highlight! EasyMotionShadeDefault           ctermfg=242 guifg=#777777
+highlight! EasyMotionIncSearchDefault       cterm=bold ctermfg=40 gui=bold guifg=#7fbf00
+highlight! EasyMotionIncCursorDefault       cterm=bold ctermfg=232 ctermbg=14 gui=bold guifg=#121813 guibg=#ACDBDA
+highlight! link EasyMotionTarget            EasyMotionTargetDefault
+highlight! link EasyMotionTarget2First      EasyMotionTarget2FirstDefault
+highlight! link EasyMotionTarget2Second     EasyMotionTarget2SecondDefault
+highlight! link EasyMotionShade             EasyMotionShadeDefault
+highlight! link EasyMotionIncSearch         EasyMotionIncSearchDefault
+highlight! link EasyMotionIncCursor         EasyMotionIncCursorDefault
 
-let g:solarized_termcolors=256
-let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
-
-augroup rainbow_lisp
-    autocmd
-    autocmd FileType lisp, clojure, scheme RainbowParentheses
-augroup END
-
+let g:rainbow#pairs = [['(', ')']]
 
 " pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
 "/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
@@ -375,14 +379,20 @@ endfunction
 
 
 " Autocommands {{{
+
 augroup vim_enter
     autocmd!
     autocmd VimEnter * GitGutterSignsDisable
 augroup END
 
+augroup file_type
+    autocmd!
+    autocmd FileType lisp, clojure, scheme RainbowParentheses
+augroup END
+
+" Mark the last editerd file
 augroup buf_leave
     autocmd!
-    " Mark the last editerd file
     autocmd BufLeave *.cpp  normal! mC
     autocmd BufLeave *.h    normal! mH
     autocmd BufLeave *.hpp  normal! mH
@@ -398,7 +408,6 @@ augroup END
 
 " Close vim if nerdtree is lonely
 " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
-
 
 function! ReadOnlyKeys()
     if &readonly

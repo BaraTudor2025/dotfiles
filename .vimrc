@@ -41,6 +41,9 @@ nmap <leader>i i<esc>r
 cmap w!! w !sudo tee % >/dev/null
 cmap qq q!
 
+" Buffer menu
+nnoremap <leader>b :ls<cr>:b<space>
+
 nnoremap ; :
 
 colorscheme desert
