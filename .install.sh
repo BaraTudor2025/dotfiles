@@ -1,7 +1,7 @@
 #!/bin/bash
 # asta este un file pentru a instala pachete pe un nou sistem linux
 
-git config --global credential.helper 'cache --timeout=86400'
+git config --global credential.helper 'cache --timeout=604800'
 
 PACKAGES=" tmux clang llvm neovim fish zsh tree ruby gem stack 
               haskell-platform cmake python-devel python3-develautomake gcc gcc-c++ kernel-devel

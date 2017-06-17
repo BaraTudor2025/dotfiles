@@ -51,7 +51,7 @@ let g:airline_powerline_fonts = 1
 Plug 'nathanaelkane/vim-indent-guides'
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
-let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_enable_on_vim_startup = 0
 
 Plug 'junegunn/rainbow_parentheses.vim'
 let g:rainbow#pairs = [['(', ')']]
@@ -331,10 +331,10 @@ noremap $ g$
 
 set termguicolors
 set background=dark
-" colorscheme NeoSolarized
-" let g:airline_theme='solarized'
-colorscheme gruvbox
-let g:airline_theme='gruvbox'
+colorscheme NeoSolarized
+let g:airline_theme='solarized'
+" colorscheme gruvbox
+" let g:airline_theme='gruvbox'
 
 
 " Pretty Visuals
