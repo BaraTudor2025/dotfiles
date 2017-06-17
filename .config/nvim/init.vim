@@ -1,13 +1,17 @@
-set foldmethod=marker
-
 " ===============================================
 " ======= Bara Tudor si firmele lui S.R.L. ======
 " ===============================================
 
 
+" Leaders {{{
+let g:mapleader = "\<space>"
+let g:maplocalleader = ','
+"}}}
+
+
 " Plugins {{{
 
-" install vim-plug on new machine
+" Autoinstall vim-plug
 if empty(glob('~/.config/nvim/plugged'))
     !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -16,79 +20,177 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-" Visuals
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'Vector2025/targets.vim'
 
-Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'junegunn/goyo.vim'
-"Plug 'nathanaelkane/vim-indent-guides'
-Plug 'vim-scripts/ZoomWin'
-Plug 'mhinz/vim-startify'
-
-" Navigation
-Plug 'scrooloose/nerdtree'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'easymotion/vim-easymotion'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'brooth/far.vim'
-
-" Edit
-Plug 'terryma/vim-multiple-cursors'
-Plug 'tomtom/tcomment_vim'
-Plug 'tpope/vim-surround'
-Plug 'mattn/emmet-vim'
-Plug 'tpope/vim-repeat'
-Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-abolish'
-"Plug 'godlygeek/tabular'
-
-" Syntax highlight
+" Colorschemes and visuals {{{
+" ====================================================================================
 Plug 'iCyMind/NeoSolarized'
 Plug 'vim-scripts/asu1dark.vim'
 Plug 'felixhummel/setcolors.vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'rakr/vim-one'
+
+" Syntax highlight
 Plug 'octol/vim-cpp-enhanced-highlight' , { 'for' : 'cpp' }
 Plug 'mizuchi/stl-syntax' , { 'for' : 'cpp' }
-Plug 'Shougo/neco-vim'
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_experimental_simple_template_highlight = 1
 
-" Autocomletion and Linters
-" Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
-Plug 'SirVer/ultisnips'
-Plug 'neitanod/vim-clevertab'
-Plug 'honza/vim-snippets'
-Plug 'w0rp/ale'
-Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
-" Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
-" Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
-" Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
 
-" GitHub integration
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" ! wget "https://raw.githubusercontent.com/morhetz/gruvbox/master/autoload/airline/themes/gruvbox.vim"
+"    \ -P ~/.config/nvim/plugged/vim-airline-themes/autoload/airline/themes
+set laststatus=2
+let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
+let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
+let g:airline_powerline_fonts = 1
 
-" Disable hjkl and other useless shit
-Plug 'takac/vim-hardtime'
 
-" Removes trailing spaces
-Plug 'thirtythreeforty/lessspace.vim'
+Plug 'nathanaelkane/vim-indent-guides'
+let g:indent_guides_guide_size = 1
+let g:indent_guides_color_change_percent = 3
+let g:indent_guides_enable_on_vim_startup = 1
 
-" Google inside vim
-Plug 'szw/vim-g'
+Plug 'junegunn/rainbow_parentheses.vim'
+let g:rainbow#pairs = [['(', ')']]
+augroup file_type
+    autocmd!
+    autocmd FileType lisp, clojure, scheme RainbowParentheses
+augroup END
 
-" Vim session manager
-Plug 'xolox/vim-session'
-Plug 'xolox/vim-misc'
 
-" Reload scripts manually
-Plug 'xolox/vim-reload'
+Plug 'vim-scripts/ZoomWin'
+nmap <silent> <leader>z :ZoomWin<cr>
 
-" Terminal powerline
+Plug 'mhinz/vim-startify'
 Plug 'edkolev/promptline.vim'
 Plug 'edkolev/tmuxline.vim'
+Plug 'junegunn/goyo.vim'
 
+" }}}
+
+
+" Navigation {{{
+" ============================================================
+Plug 'scrooloose/nerdtree'
+nmap <silent> <leader>n :NERDTreeCWD<cr>
+let g:NERDTreeWinSize = 25
+" Close vim if nerdtree is lonely
+" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
+
+
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+nnoremap F :FZF ~<cr>
+nnoremap <leader>f :FZF <cr>
+nnoremap <leader>b :Buffers<cr>
+
+
+Plug 'easymotion/vim-easymotion'
+map s <Plug>(easymotion-bd-f)
+nmap s <Plug>(easymotion-overwin-f)
+map <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+vmap <Leader>l <Plug>(easymotion-bd-jk)
+map f <Plug>(easymotion-sl)
+map t <Plug>(easymotion-bd-tl)
+let g:EasyMotion_smartcase = 1
+
+
+Plug 'takac/vim-hardtime'
+let g:hardtime_default_on = 1
+let g:hardtime_ignore_quickfix = 1
+let g:hardtime_maxcount = 3
+let g:hardtime_allow_different_key = 1
+
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'vim-scripts/camelcasemotion'
+" Plug 'tpope/projectionist.vim'
+
+
+"}}}
+
+
+" Editing {{{
+" ============================================================
+Plug 'thirtythreeforty/lessspace.vim'
+let g:lessspace_enabled = 1
+let g:lessspace_normal = 1
+let g:lessspace_whitelist = ['vim']
+let g:lessspace_blacklist = ['*']
+
+Plug 'jiangmiao/auto-pairs'
+let g:AutoPairs = { '(': ')' , '[': ']' , '{': '}', "'": "'", '"': '"'}
+xmap ga <Plug>(EasyAlign)
+let g:AutoPairsFlyMode = 0
+
+Plug 'mattn/emmet-vim'
+" let g:user_emmet_install_global = 0
+autocmd Filetype html, css EmmetInstall
+
+Plug 'junegunn/vim-easy-align'
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+Plug 'AndrewRadev/sideways.vim'
+" nnoremap <c-h> :SidewaysLeft<cr>
+" nnoremap <c-l> :SidewaysRight<cr>
+
+Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
+Plug 'tpope/vim-repeat'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-surround'
+Plug 'brooth/far.vim'
+Plug 'tpope/vim-abolish'
+" Plug 'kana/vim-textobj-user'
+Plug 'Vector2025/targets.vim'
+
+" }}}
+
+
+" Autocomletion, Linters, Snippets {{{
+" ============================================================
+" Autocompletion
+" Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
+
+" Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
+" Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
+" Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
+
+" Linters
+" Plug 'neomake/neomake'
+Plug 'Shougo/neco-vim'
+Plug 'neitanod/vim-clevertab'
+Plug 'w0rp/ale'
+
+" Snippets
+Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+let g:UltiSnipsExpandTrigger='<tab>'
+let g:UltiSnipsJumpForwardTrigger='<tab>'
+let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
+
+"}}}
+
+
+" Utility {{{
+" ============================================================
+Plug 'szw/vim-g'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-reload'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+let g:gitgutter_sign_column_always = 1
+
+Plug 'xolox/vim-session'
+let g:session_autosave = 'yes'
+let g:session_command_aliases = 1
+" }}}
 
 call plug#end()
 
@@ -103,10 +205,10 @@ set fileencoding=utf-8
 
 syntax on
 set ruler
-set nowrap
+set wrap
 set history=1000
 set hidden      " change buffer without saving
-set cursorline  " highlight line
+" set cursorline  " highlight line
 set title       " change the terminal title
 set guicursor=  " set block cursor
 set clipboard+=unnamedplus " use os clipboard
@@ -140,34 +242,6 @@ augroup END
 
 " set guifont=Consolas:h13 " not working in terminal
 
-let g:gitgutter_sign_column_always = 1
-
-let g:UltiSnipsExpandTrigger='<tab>'
-let g:UltiSnipsJumpForwardTrigger='<tab>'
-let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
-
-let g:AutoPairs = { '(': ')', '[': ']', '{': '}', "'": "'", '"': '"'}
-let g:AutoPairsFlyMode = 0
-
-let g:session_autosave = 'yes'
-let g:session_command_aliases = 1
-
-let g:hardtime_default_on = 1
-let g:hardtime_ignore_quickfix = 1
-let g:hardtime_maxcount = 3
-let g:hardtime_allow_different_key = 1
-
-let g:lessspace_enabled = 1
-let g:lessspace_normal = 1
-let g:lessspace_whitelist = ['vim']
-let g:lessspace_blacklist = ['*']
-
-let g:indent_guides_guide_size = 1
-let g:indent_guides_color_change_percent = 3
-let g:indent_guides_enable_on_vim_startup = 1
-
-" let g:user_emmet_install_global = 0
-autocmd Filetype html, css EmmetInstall
 
 function! ToggleWrap()
     if &wrap
@@ -182,8 +256,7 @@ endfunction
 
 " Mappings {{{
 
-let g:mapleader = "\<space>"
-let g:maplocalleader = ','
+set foldmethod=marker
 
 " Insert a single character
 nmap <leader>i i <esc>r
@@ -195,16 +268,9 @@ nnoremap <leader>v <C-w>v<C-w>l
 nmap <silent> <leader>ip :PlugInstall<cr>
 nmap <silent> <leader>up :PlugUpdate<cr>
 
-" Go fullscreen or use Goyo
-nmap <silent> <leader>z :ZoomWin<cr>
-
 " Edit this file
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
 nmap <silent> <leader>rv :source $MYVIMRC<cr>
-
-" Open nerd tree with ctrl-n
-nmap <silent> <leader>n :NERDTreeCWD<cr>
-let g:NERDTreeWinSize = 25
 
 " Execute last command
 nmap Q @:
@@ -212,15 +278,9 @@ nmap Q @:
 cmap w!! w !sudo tee % >/dev/null
 cmap qq q!
 
-nnoremap <leader>b :Buffers<cr>
-
 " copy and paste a paragraph below
-noremap cp yap<S-}>p
-
-nnoremap F :FZF ~<cr>
-nnoremap <leader>f :FZF <cr>
-" let $FZF_DEFAULT_COMMAND = 'find . -type f'
-let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+" noremap cp yap<S-}>p
+" nmap cp :let @+ = expand("%:p")<cr>
 
 " Easy column
 nnoremap ; :
@@ -229,20 +289,17 @@ nnoremap ; :
 inoremap jk <Esc>`^
 inoremap jj <Esc>`^
 
-" Delete a line in insert mode
-inoremap <c-d> <esc> ddi
-
 " Select last paste in visual mode
-nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
+" nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Insert semicolomn at end of line in insert mode
 inoremap ;; <esc>A;
 
 " Buffer movement
-nnoremap gn :bnext<cr>
-nnoremap gp :bprevious<cr>
-nnoremap gd :bdelete<cr>
-nnoremap gf <C-^>
+"nnoremap gn :bnext<cr>
+"nnoremap gp :bprevious<cr>
+"nnoremap gd :bdelete<cr>
+"nnoremap gf <C-^>
 
 " Insert line
 nnoremap o o<ESC>
@@ -267,35 +324,25 @@ noremap 0 g0
 noremap ^ g^
 noremap $ g$
 
-" Easy motion mappings
-map s <Plug>(easymotion-bd-f)
-nmap s <Plug>(easymotion-overwin-f)
-
-map <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
-
-nmap <Leader>l <Plug>(easymotion-overwin-line)
-vmap <Leader>l <Plug>(easymotion-bd-jk)
-
-map f <Plug>(easymotion-sl)
-
-map t <Plug>(easymotion-bd-tl)
-
-let g:EasyMotion_smartcase = 1
-
 " }}}
 
 
 " Colors {{{
 
-
 set termguicolors
 set background=dark
-colorscheme NeoSolarized
+" colorscheme NeoSolarized
+" let g:airline_theme='solarized'
+colorscheme gruvbox
+let g:airline_theme='gruvbox'
+
+
+" Pretty Visuals
 highlight! link Visual Folded
 highlight! link IncSearch DiffChange
 highlight! link Search DiffChange
 
+" Workaround because colorscheme clears the easy motion highlights
 highlight! EasyMotionTargetDefault          cterm=bold ctermfg=196 gui=bold guifg=#ff0000
 highlight! EasyMotionTarget2FirstDefault    cterm=bold ctermfg=11 gui=bold guifg=#ffb400
 highlight! EasyMotionTarget2SecondDefault   cterm=bold ctermfg=3 gui=bold guifg=#b98300
@@ -310,25 +357,9 @@ highlight! link EasyMotionShade             EasyMotionShadeDefault
 highlight! link EasyMotionIncSearch         EasyMotionIncSearchDefault
 highlight! link EasyMotionIncCursor         EasyMotionIncCursorDefault
 
-let g:rainbow#pairs = [['(', ')']]
-
 " pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
 "/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
 "unlet g:save_cpo
-
-
-" C++ highlight
-let g:cpp_class_scope_highlight = 1
-let g:cpp_member_variable_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
-
-" Airline
-set laststatus=2
-let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
-let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
-let g:airline_theme='solarized'
-let g:airline_powerline_fonts = 1
-
 
 " }}}
 
@@ -380,21 +411,12 @@ endfunction
 
 " Autocommands {{{
 
-" augroup vim_enter
-"     autocmd!
-"     autocmd VimEnter * GitGutterSignsDisable
-" augroup END
-
-augroup file_type
-    autocmd!
-    autocmd FileType lisp, clojure, scheme RainbowParentheses
-augroup END
-
 " Mark the last editerd file
 augroup buf_leave
     autocmd!
     autocmd BufLeave *.cpp  normal! mC
     autocmd BufLeave *.h    normal! mH
+    autocmd BufLeave *.vim  normal! mV
     autocmd BufLeave *.hpp  normal! mH
     autocmd BufLeave *.hs   normal! mL
 augroup END
@@ -406,8 +428,6 @@ augroup buf_enter
     autocmd BufRead * :normal zz
 augroup END
 
-" Close vim if nerdtree is lonely
-" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
 
 function! ReadOnlyKeys()
     if &readonly
@@ -428,7 +448,7 @@ endfun
 " }}}
 
 
-" Neomake {{{
+" Neomake (disabled) {{{
 
 " " Use leader + b to build current file in his directory
 " " nmap <silent><leader>b :cd %:h<cr> :Neomake!<cr> :!./a.out<cr>
@@ -459,7 +479,7 @@ endfun
 " }}}
 
 
-" Deoplete {{{
+" Deoplete (disabled){{{
 
 " let g:deoplete#enable_at_startup = 1
 " let g:deoplet#enable_camel_case = 1
