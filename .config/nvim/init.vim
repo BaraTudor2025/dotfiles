@@ -291,7 +291,7 @@ let g:EasyMotion_smartcase = 1
 
 set termguicolors
 set background=dark
-colorscheme gruvbox
+colorscheme NeoSolarized
 highlight! link Visual Folded
 highlight! link IncSearch DiffChange
 highlight! link Search DiffChange
@@ -380,10 +380,10 @@ endfunction
 
 " Autocommands {{{
 
-augroup vim_enter
-    autocmd!
-    autocmd VimEnter * GitGutterSignsDisable
-augroup END
+" augroup vim_enter
+"     autocmd!
+"     autocmd VimEnter * GitGutterSignsDisable
+" augroup END
 
 augroup file_type
     autocmd!
