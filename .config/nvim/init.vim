@@ -11,24 +11,46 @@ let g:maplocalleader = ','
 
 " Plugins {{{
 
-" Autoinstall vim-plug
-if empty(glob('~/.config/nvim/plugged'))
-    !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
+" Autoinstall vim-plug {{{
+
+fun! InstallVimPlug()
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+endfun
+
+fun! InstallNeovimPlug()
+    if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+        silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+endfun
+
+" Always neovim
+if has('nvim') || 1
+    let s:plugs_dir = '~/.local/share/nvim/plugged'
+    call InstallNeovimPlug()
+else
+    let s:plugs_dir = '~/.vim/plugged'
+    call InstallVimPlug()
 endif
 
-call plug#begin('~/.config/nvim/plugged')
+" }}}
 
-Plug 'Vector2025/targets.vim'
+call plug#begin(s:plugs_dir)
 
-" Colorschemes and visuals {{{
+" Colorschemes and Visuals {{{
 " ====================================================================================
 Plug 'iCyMind/NeoSolarized'
-Plug 'vim-scripts/asu1dark.vim'
-Plug 'felixhummel/setcolors.vim'
-Plug 'flazz/vim-colorschemes'
-Plug 'rakr/vim-one'
+Plug 'chriskempson/base16-vim'
+" Plug 'rakr/vim-one'
+Plug 'morhetz/gruvbox'
+" Plug 'KeitaNakamura/neodark.vim'
+" Plug 'cschlueter/vim-wombat'
+Plug 'tmux-plugins/vim-tmux'
 
 " Syntax highlight
 Plug 'octol/vim-cpp-enhanced-highlight' , { 'for' : 'cpp' }
@@ -37,21 +59,18 @@ let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
 
-
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" ! wget "https://raw.githubusercontent.com/morhetz/gruvbox/master/autoload/airline/themes/gruvbox.vim"
-"    \ -P ~/.config/nvim/plugged/vim-airline-themes/autoload/airline/themes
-set laststatus=2
 let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
 let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
 let g:airline_powerline_fonts = 1
 
+Plug 'Yggdroot/indentLine'
 
-Plug 'nathanaelkane/vim-indent-guides'
-let g:indent_guides_guide_size = 1
-let g:indent_guides_color_change_percent = 3
-let g:indent_guides_enable_on_vim_startup = 0
+" Plug 'nathanaelkane/vim-indent-guides'
+" let g:indent_guides_guide_size = 1
+" let g:indent_guides_color_change_percent = 3
+" let g:indent_guides_enable_on_vim_startup = 0
 
 Plug 'junegunn/rainbow_parentheses.vim'
 let g:rainbow#pairs = [['(', ')']]
@@ -60,14 +79,15 @@ augroup file_type
     autocmd FileType lisp, clojure, scheme RainbowParentheses
 augroup END
 
-
-Plug 'vim-scripts/ZoomWin'
+Plug 'maciej-ka/ZoomWin'
 nmap <silent> <leader>z :ZoomWin<cr>
 
 Plug 'mhinz/vim-startify'
 Plug 'edkolev/promptline.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'junegunn/goyo.vim'
+" autocmd! User GoyoEnter nested call <SID>goyo_enter()
+" autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " }}}
 
@@ -80,26 +100,21 @@ let g:NERDTreeWinSize = 25
 " Close vim if nerdtree is lonely
 " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
 
-
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-nnoremap F :FZF ~<cr>
-nnoremap <leader>f :FZF <cr>
+nnoremap F :Files ~<cr>
+nnoremap <leader>f :Files <cr>
 nnoremap <leader>b :Buffers<cr>
 
-
 Plug 'easymotion/vim-easymotion'
-map s <Plug>(easymotion-bd-f)
-nmap s <Plug>(easymotion-overwin-f)
-map <Leader>w <Plug>(easymotion-bd-w)
+nmap s <Plug>(easymotion-overwin-f2)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 nmap <Leader>l <Plug>(easymotion-overwin-line)
 vmap <Leader>l <Plug>(easymotion-bd-jk)
 map f <Plug>(easymotion-sl)
 map t <Plug>(easymotion-bd-tl)
 let g:EasyMotion_smartcase = 1
-
 
 Plug 'takac/vim-hardtime'
 let g:hardtime_default_on = 1
@@ -109,8 +124,8 @@ let g:hardtime_allow_different_key = 1
 
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'vim-scripts/camelcasemotion'
+Plug 'tpope/vim-unimpaired'
 " Plug 'tpope/projectionist.vim'
-
 
 "}}}
 
@@ -120,17 +135,16 @@ Plug 'vim-scripts/camelcasemotion'
 Plug 'thirtythreeforty/lessspace.vim'
 let g:lessspace_enabled = 1
 let g:lessspace_normal = 1
-let g:lessspace_whitelist = ['vim']
-let g:lessspace_blacklist = ['*']
+" let g:lessspace_whitelist = ['vim']
+" let g:lessspace_blacklist = ['*']
 
 Plug 'jiangmiao/auto-pairs'
-let g:AutoPairs = { '(': ')' , '[': ']' , '{': '}', "'": "'", '"': '"'}
-xmap ga <Plug>(EasyAlign)
-let g:AutoPairsFlyMode = 0
+" let g:AutoPairs = { '(': ')' , '[': ']' , '{': '}', "'": "'", '"': '"'}
+let g:AutoPairsFlyMode = 1
 
 Plug 'mattn/emmet-vim'
-" let g:user_emmet_install_global = 0
-autocmd Filetype html, css EmmetInstall
+autocmd! Filetype html :EmmetInstall
+autocmd! Filetype css :EmmetInstall
 
 Plug 'junegunn/vim-easy-align'
 xmap ga <Plug>(EasyAlign)
@@ -140,6 +154,12 @@ Plug 'AndrewRadev/sideways.vim'
 " nnoremap <c-h> :SidewaysLeft<cr>
 " nnoremap <c-l> :SidewaysRight<cr>
 
+Plug 'mbbill/undotree'
+if has('persistent_undo')
+    set undodir=~/.undodir/
+    set undofile
+endif
+
 Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
 Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-multiple-cursors'
@@ -147,8 +167,8 @@ Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
 Plug 'brooth/far.vim'
 Plug 'tpope/vim-abolish'
+Plug 'wellle/targets.vim'
 " Plug 'kana/vim-textobj-user'
-Plug 'Vector2025/targets.vim'
 
 " }}}
 
@@ -202,13 +222,14 @@ call plug#end()
 set encoding=utf-8
 scriptencoding utf-8
 set fileencoding=utf-8
+" filetype plugin indent on
 
 syntax on
 set ruler
 set wrap
 set history=1000
 set hidden      " change buffer without saving
-" set cursorline  " highlight line
+set cursorline  " highlight line
 set title       " change the terminal title
 set guicursor=  " set block cursor
 set clipboard+=unnamedplus " use os clipboard
@@ -218,10 +239,11 @@ set nobackup
 set noswapfile
 set scrolloff=2
 set autochdir
-set pastetoggle=<leader>p
 set nohlsearch
 set noincsearch
+set foldmethod=marker
 set shell=/bin/bash
+set laststatus=2
 
 " Tab settings
 set expandtab
@@ -240,9 +262,6 @@ augroup relative_num
     autocmd! InsertLeave * set relativenumber
 augroup END
 
-" set guifont=Consolas:h13 " not working in terminal
-
-
 function! ToggleWrap()
     if &wrap
         set nowrap
@@ -256,24 +275,18 @@ endfunction
 
 " Mappings {{{
 
-set foldmethod=marker
-
 " Insert a single character
 nmap <leader>i i <esc>r
-
-" Split this window
-nnoremap <leader>v <C-w>v<C-w>l
-
-" Install Plugs
-nmap <silent> <leader>ip :PlugInstall<cr>
-nmap <silent> <leader>up :PlugUpdate<cr>
 
 " Edit this file
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
 nmap <silent> <leader>rv :source $MYVIMRC<cr>
 
-" Execute last command
-nmap Q @:
+" Execute last command | replay macro
+" nmap Q @:
+nmap Q @q
+
+nnoremap <leader>q :Bdelete<cr>
 
 cmap w!! w !sudo tee % >/dev/null
 cmap qq q!
@@ -285,6 +298,9 @@ cmap qq q!
 " Easy column
 nnoremap ; :
 
+" yank like pro
+nnoremap Y y$
+
 " Better ESC
 inoremap jk <Esc>`^
 inoremap jj <Esc>`^
@@ -294,12 +310,6 @@ inoremap jj <Esc>`^
 
 " Insert semicolomn at end of line in insert mode
 inoremap ;; <esc>A;
-
-" Buffer movement
-"nnoremap gn :bnext<cr>
-"nnoremap gp :bprevious<cr>
-"nnoremap gd :bdelete<cr>
-"nnoremap gf <C-^>
 
 " Insert line
 nnoremap o o<ESC>
@@ -312,10 +322,8 @@ map H ^
 map L $
 
 " Align text blocks and keep them highlighted
-vmap < <gv
-vmap > >gv
-nmap < <<
-nmap > >>
+xnoremap <nowait> < <gv
+xnoremap <nowait> > >gv
 
 " Edits wraped lines
 noremap j gj
@@ -324,6 +332,9 @@ noremap 0 g0
 noremap ^ g^
 noremap $ g$
 
+" Toggle search highlight
+let g:hlstate=0
+nnoremap <leader>h :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
 " }}}
 
 
@@ -331,18 +342,19 @@ noremap $ g$
 
 set termguicolors
 set background=dark
-colorscheme NeoSolarized
-let g:airline_theme='solarized'
-" colorscheme gruvbox
-" let g:airline_theme='gruvbox'
+" colo NeoSolarized
+" colo base16-oceanicnext
+" colo base16-onedark
+let g:gruvbox_contrast_light = 'medium'
+let g:gruvbox_contrast_dark = 'medium'
+colo gruvbox
+" colo base16-default-dark
+" colo base16-eighties
 
-
-" Pretty Visuals
+" Workaround {{{
 highlight! link Visual Folded
 highlight! link IncSearch DiffChange
 highlight! link Search DiffChange
-
-" Workaround because colorscheme clears the easy motion highlights
 highlight! EasyMotionTargetDefault          cterm=bold ctermfg=196 gui=bold guifg=#ff0000
 highlight! EasyMotionTarget2FirstDefault    cterm=bold ctermfg=11 gui=bold guifg=#ffb400
 highlight! EasyMotionTarget2SecondDefault   cterm=bold ctermfg=3 gui=bold guifg=#b98300
@@ -356,10 +368,7 @@ highlight! link EasyMotionTarget2Second     EasyMotionTarget2SecondDefault
 highlight! link EasyMotionShade             EasyMotionShadeDefault
 highlight! link EasyMotionIncSearch         EasyMotionIncSearchDefault
 highlight! link EasyMotionIncCursor         EasyMotionIncCursorDefault
-
-" pentru a rezolza bug-ul cu highlight-ul commenteaza linia din fisiereul
-"/home/tudor/.config/nvim/plugged/vim-easymotion/autoload/EasyMotion/highlight.vim
-"unlet g:save_cpo
+" }}}
 
 " }}}
 
@@ -391,7 +400,7 @@ let g:ale_open_list = 0
 function! ToggleALEwin()
     if g:ale_open_list == 0
         g:ale_open_list = 1
-    else
+else
         g:ale_open_list = 0
     endif
 endfunction
@@ -450,31 +459,31 @@ endfun
 
 " Neomake (disabled) {{{
 
-" " Use leader + b to build current file in his directory
-" " nmap <silent><leader>b :cd %:h<cr> :Neomake!<cr> :!./a.out<cr>
-"
+" Use leader + b to build current file in his directory
+" nmap <silent><leader>b :cd %:h<cr> :Neomake!<cr> :!./a.out<cr>
+
 " let g:neomake_open_list = 2
 " let g:neomake_cpp_enabled_makers = ['clang']
 " let g:neomake_cpp_clang_maker = {
-"     \ 'exe' : 'clang++',
-"     \ 'args' : [ '-std=c++1z', '-Wall', '-Wno-c++11-extensions']
-"     \ }
-"
-" let g:neomake_c_enabled_makers = ['gcc']
-" let g:neomake_c_gcc_maker = {
-"     \ 'exe' : 'gcc',
-"     \ 'args' : [ '-Wall' ]
-"     \ }
-"
+"    \ 'exe' : 'clang++',
+"    \ 'args' : [ '-std=c++1z', '-Wall', '-Wno-c++11-extensions']
+"    \ }
+
+"let g:neomake_c_enabled_makers = ['gcc']
+"let g:neomake_c_gcc_maker = {
+    " \ 'exe' : 'gcc',
+    " \ 'args' : [ '-Wall' ]
+    " \ }
+
 " let g:neomake_warning_sign = {
-"     \ 'text': 'W',
-"     \ 'texthl': 'WarningMsg',
-"     \ }
+    " \ 'text': 'W',
+    " \ 'texthl': 'WarningMsg',
+    " \ }
 " let g:neomake_error_sign = {
-"     \ 'text': 'E',
-"     \ 'texthl': 'ErrorMsg',
-"     \ }
-"
+    " \ 'text': 'E',
+    " \ 'texthl': 'ErrorMsg',
+    " \ }
+
 " autocmd! BufWritePost,BufEnter * Neomake
 " }}}
 

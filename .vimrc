@@ -9,11 +9,12 @@ set nocompatible
 
 syntax on
 filetype on
+set path+=**
 set ruler       " Info stanga jos, procente, line si coloana
 set nowrap
 set guicursor+=a:blinkon0 " Dezactiveaza flicareala
 set history=1000 " istoric MARE
-set cursorline   " Highligth current line
+set nocursorline   " Highligth current line
 set nohlsearch   " highlight searched words
 set noincsearch  " coloreaza cuvantul in timp real
 set guifont=Consolas:h13 " not working in terminal
@@ -30,6 +31,22 @@ set fileencoding=utf-8
 set foldmethod=marker
 set laststatus=2
 set hidden
+set autochdir
+
+" Tab settings
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set shiftround
+
+set wildmenu
+set ignorecase
+set wildmode=longest:full,full
+
+colorscheme desert
+
+let g:mapleader = "\<space>"
 
 " Edit this file
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
@@ -45,11 +62,6 @@ cmap qq q!
 nnoremap <leader>b :ls<cr>:b<space>
 
 nnoremap ; :
-
-colorscheme desert
-
-set wildmenu
-set wildmode=list:full,full
 
 " Split this window
 nnoremap <leader>v <C-w>v<C-w>l
@@ -85,6 +97,10 @@ noremap 0 g0
 noremap ^ g^
 noremap $ g$
 
+" Toggle search highlight
+let g:hlstate=0
+nnoremap <leader>h :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
+
 set number relativenumber
 augroup relative_num
     autocmd! InsertEnter * set norelativenumber
@@ -109,6 +125,17 @@ function! ReadOnlyKeys()
         noremap <buffer>t <c-]> "follow tag
     endif
 endfunction
+
+" Mark the last editerd file
+augroup buf_leave
+    autocmd!
+    autocmd BufLeave *.cpp  normal! mC
+    autocmd BufLeave *.h    normal! mH
+    autocmd BufLeave *.vim  normal! mV
+    autocmd BufLeave *.py   normal! mP
+    autocmd BufLeave *.hpp  normal! mH
+    autocmd BufLeave *.hs   normal! mL
+augroup END
 
 fun! CursorPos()
     if line("'\"") > 0 && line ("'\"") <= line ('$')
