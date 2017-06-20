@@ -3,9 +3,12 @@
 " ===============================================
 
 
-" Leaders {{{
+" Leaders and init {{{
 let g:mapleader = "\<space>"
 let g:maplocalleader = ','
+augroup vim_enter
+    au!
+augroup END
 "}}}
 
 
@@ -17,7 +20,7 @@ fun! InstallVimPlug()
     if empty(glob('~/.vim/autoload/plug.vim'))
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
             \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
+        autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 endfun
 
@@ -25,7 +28,7 @@ fun! InstallNeovimPlug()
     if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
         silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
             \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
+        autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 endfun
 
@@ -67,16 +70,11 @@ let g:airline_powerline_fonts = 1
 
 Plug 'Yggdroot/indentLine'
 
-" Plug 'nathanaelkane/vim-indent-guides'
-" let g:indent_guides_guide_size = 1
-" let g:indent_guides_color_change_percent = 3
-" let g:indent_guides_enable_on_vim_startup = 0
-
 Plug 'junegunn/rainbow_parentheses.vim'
 let g:rainbow#pairs = [['(', ')']]
 augroup file_type
     autocmd!
-    autocmd FileType lisp, clojure, scheme RainbowParentheses
+    autocmd FileType lisp,clojure,scheme RainbowParentheses
 augroup END
 
 Plug 'maciej-ka/ZoomWin'
@@ -86,6 +84,7 @@ Plug 'mhinz/vim-startify'
 Plug 'edkolev/promptline.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 " autocmd! User GoyoEnter nested call <SID>goyo_enter()
 " autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
@@ -103,6 +102,7 @@ let g:NERDTreeWinSize = 25
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+let g:fzf_layout = { 'down': '~25%' }
 nnoremap F :Files ~<cr>
 nnoremap <leader>f :Files <cr>
 nnoremap <leader>b :Buffers<cr>
@@ -143,30 +143,36 @@ Plug 'jiangmiao/auto-pairs'
 let g:AutoPairsFlyMode = 1
 
 Plug 'mattn/emmet-vim'
-autocmd! Filetype html :EmmetInstall
-autocmd! Filetype css :EmmetInstall
+autocmd! Filetype html,css :EmmetInstall
 
-Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 Plug 'AndrewRadev/sideways.vim'
-" nnoremap <c-h> :SidewaysLeft<cr>
-" nnoremap <c-l> :SidewaysRight<cr>
+nnoremap <M-h> :SidewaysLeft<cr>
+nnoremap <M-l> :SidewaysRight<cr>
 
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
 endif
 
-Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
+" Plug 'vim-scripts/paredit.vim'
+" autocmd FileType * call PareditInitBuffer()
+" let g:paredit_mode=1
+
+Plug 'AndrewRadev/splitjoin.vim'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-surround'
+Plug 'matze/vim-move'
+Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
-Plug 'tpope/vim-surround'
 Plug 'brooth/far.vim'
-Plug 'tpope/vim-abolish'
 Plug 'wellle/targets.vim'
 " Plug 'kana/vim-textobj-user'
 
@@ -176,7 +182,8 @@ Plug 'wellle/targets.vim'
 " Autocomletion, Linters, Snippets {{{
 " ============================================================
 " Autocompletion
-" Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
+Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
+Plug 'ervandew/supertab'
 
 " Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
 " Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
@@ -184,6 +191,7 @@ Plug 'wellle/targets.vim'
 
 " Linters
 " Plug 'neomake/neomake'
+" Plug 'metakirby5/codi.vim'
 Plug 'Shougo/neco-vim'
 Plug 'neitanod/vim-clevertab'
 Plug 'w0rp/ale'
@@ -191,9 +199,6 @@ Plug 'w0rp/ale'
 " Snippets
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
-let g:UltiSnipsExpandTrigger='<tab>'
-let g:UltiSnipsJumpForwardTrigger='<tab>'
-let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
 
 "}}}
 
@@ -216,8 +221,7 @@ call plug#end()
 
 " }}}
 
-
-" General settings {{{
+" Basic settings {{{
 
 set encoding=utf-8
 scriptencoding utf-8
@@ -227,6 +231,7 @@ set fileencoding=utf-8
 syntax on
 set ruler
 set wrap
+set noshowmode
 set history=1000
 set hidden      " change buffer without saving
 set cursorline  " highlight line
@@ -286,8 +291,6 @@ nmap <silent> <leader>rv :source $MYVIMRC<cr>
 " nmap Q @:
 nmap Q @q
 
-nnoremap <leader>q :Bdelete<cr>
-
 cmap w!! w !sudo tee % >/dev/null
 cmap qq q!
 
@@ -305,25 +308,24 @@ nnoremap Y y$
 inoremap jk <Esc>`^
 inoremap jj <Esc>`^
 
-" Select last paste in visual mode
-" nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
-
-" Insert semicolomn at end of line in insert mode
-inoremap ;; <esc>A;
-
-" Insert line
-nnoremap o o<ESC>
-nnoremap O O<ESC>
-
 " Faster navigation
 map J 5j
 map K 5k
 map H ^
 map L $
 
-" Align text blocks and keep them highlighted
-xnoremap <nowait> < <gv
-xnoremap <nowait> > >gv
+" Insert line
+nnoremap o o<ESC>
+nnoremap O O<ESC>
+imap <c-o> <esc>oi
+
+" Insert semicolomn at end of line in insert mode
+inoremap ;; <end>A;
+inoremap ,, <end>A,
+
+" use ctrl-e/a goto begining or end of line
+inoremap <c-e> <end>
+inoremap <c-a> <home>
 
 " Edits wraped lines
 noremap j gj
@@ -332,9 +334,14 @@ noremap 0 g0
 noremap ^ g^
 noremap $ g$
 
+" Align text blocks and keep them highlighted
+xnoremap <nowait> < <gv
+xnoremap <nowait> > >gv
+
 " Toggle search highlight
 let g:hlstate=0
-nnoremap <leader>h :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
+command! ToggleHilight :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
+
 " }}}
 
 
@@ -345,6 +352,8 @@ set background=dark
 " colo NeoSolarized
 " colo base16-oceanicnext
 " colo base16-onedark
+" let g:airline_theme = 'solarized'
+autocmd vim_enter VimEnter * Tmuxline powerline
 let g:gruvbox_contrast_light = 'medium'
 let g:gruvbox_contrast_dark = 'medium'
 colo gruvbox
@@ -352,6 +361,7 @@ colo gruvbox
 " colo base16-eighties
 
 " Workaround {{{
+
 highlight! link Visual Folded
 highlight! link IncSearch DiffChange
 highlight! link Search DiffChange
@@ -368,53 +378,50 @@ highlight! link EasyMotionTarget2Second     EasyMotionTarget2SecondDefault
 highlight! link EasyMotionShade             EasyMotionShadeDefault
 highlight! link EasyMotionIncSearch         EasyMotionIncSearchDefault
 highlight! link EasyMotionIncCursor         EasyMotionIncCursorDefault
-" }}}
 
 " }}}
 
+" }}}
 
-" ALE {{{
-" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-" let g:SuperTabDefaultCompletionType = '<C-n>'
-"
-" " better key bindings for UltiSnipsExpandTrigger
-" let g:UltiSnipsExpandTrigger="<cr>"
-" let g:UltiSnipsJumpForwardTrigger="<c-j>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+" ALE YCM UltiSnips {{{
+let g:ycm_python_binary_path = '/usr/bin/python3'
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = '<cr>'
+let g:UltiSnipsJumpForwardTrigger = '<c-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
+
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
+
+let g:ycm_semantic_triggers = {'haskell' : ['.']}
+
+let g:ycm_global_ycm_extra_conf = '~/.config/nvim/.ycm_extra_conf.py'
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_collect_identifiers_from_tags_files = 1
+" let g:ycm_key_invoke_completion = '<c-j>'
+let g:ycm_complete_in_strings = 1
+set pumheight=10
 
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = 'W'
 let g:ale_sign_collumn_always = 1
 let g:ale_set_loclist = 1
 let g:ale_set_quiqkfix = 0
-
 " let g:ale_lint_on_save = 'never'
-" let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_text_changed = 'never'
+
 
 nmap <silent><M-k> <Plug>(ale_previous_wrap)
 nmap <silent><M-j> <Plug>(ale_next_wrap)
 
 let g:ale_open_list = 0
+let g:ale_keep_list_window_open = 0
 
-function! ToggleALEwin()
-    if g:ale_open_list == 0
-        g:ale_open_list = 1
-else
-        g:ale_open_list = 0
-    endif
-endfunction
-
-" }}}
-
-
-" YouCompleteMe {{{
-  " let g:ycm_global_ycm_extra_conf = '~/.config/nvim/.ycm_extra_conf.py'
-  " let g:ycm_autoclose_preview_window_after_completion = 1
-  " let g:ycm_seed_identifiers_with_syntax = 1
-  " let g:ycm_collect_identifiers_from_tags_files = 1
-  " let g:ycm_key_invoke_completion = '<c-j>'
-  " let g:ycm_complete_in_strings = 1
 " }}}
 
 
@@ -436,7 +443,6 @@ augroup buf_enter
     autocmd BufReadPost * call CursorPos()
     autocmd BufRead * :normal zz
 augroup END
-
 
 function! ReadOnlyKeys()
     if &readonly
