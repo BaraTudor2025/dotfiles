@@ -45,12 +45,12 @@ endif
 
 call plug#begin(s:plugs_dir)
 
-" Colorschemes and Visuals {{{
-" ====================================================================================
+" Colorschemes and Visuals ================================================ {{{
 Plug 'iCyMind/NeoSolarized'
 Plug 'chriskempson/base16-vim'
 " Plug 'rakr/vim-one'
 Plug 'morhetz/gruvbox'
+" Plug 'biskark/vim-ultimate-colorscheme-utility'
 " Plug 'KeitaNakamura/neodark.vim'
 " Plug 'cschlueter/vim-wombat'
 Plug 'tmux-plugins/vim-tmux'
@@ -68,52 +68,30 @@ let g:airline#extensions#tabline#enabled = 1     " Enable the list of buffers
 let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
 let g:airline_powerline_fonts = 1
 
-Plug 'Yggdroot/indentLine'
-
 Plug 'junegunn/rainbow_parentheses.vim'
 let g:rainbow#pairs = [['(', ')']]
-augroup file_type
-    autocmd!
-    autocmd FileType lisp,clojure,scheme RainbowParentheses
-augroup END
 
 Plug 'maciej-ka/ZoomWin'
-nmap <silent> <leader>z :ZoomWin<cr>
-
 Plug 'mhinz/vim-startify'
+Plug 'Yggdroot/indentLine'
 Plug 'edkolev/promptline.vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-" autocmd! User GoyoEnter nested call <SID>goyo_enter()
-" autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " }}}
 
 
-" Navigation {{{
-" ============================================================
-Plug 'scrooloose/nerdtree'
-nmap <silent> <leader>n :NERDTreeCWD<cr>
-let g:NERDTreeWinSize = 25
-" Close vim if nerdtree is lonely
-" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | :q | endif
-
+" Navigation ============================================================== {{{
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 let g:fzf_layout = { 'down': '~25%' }
-nnoremap F :Files ~<cr>
-nnoremap <leader>f :Files <cr>
-nnoremap <leader>b :Buffers<cr>
+
+Plug 'scrooloose/nerdtree'
+let g:NERDTreeWinSize = 25
 
 Plug 'easymotion/vim-easymotion'
-nmap s <Plug>(easymotion-overwin-f2)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
-nmap <Leader>l <Plug>(easymotion-overwin-line)
-vmap <Leader>l <Plug>(easymotion-bd-jk)
-map f <Plug>(easymotion-sl)
-map t <Plug>(easymotion-bd-tl)
 let g:EasyMotion_smartcase = 1
 
 Plug 'takac/vim-hardtime'
@@ -123,6 +101,8 @@ let g:hardtime_maxcount = 3
 let g:hardtime_allow_different_key = 1
 
 Plug 'christoomey/vim-tmux-navigator'
+" Plug 'vim-scripts/a.vim'
+Plug 'artnez/vim-wipeout'
 Plug 'vim-scripts/camelcasemotion'
 Plug 'tpope/vim-unimpaired'
 " Plug 'tpope/projectionist.vim'
@@ -130,40 +110,14 @@ Plug 'tpope/vim-unimpaired'
 "}}}
 
 
-" Editing {{{
-" ============================================================
-Plug 'thirtythreeforty/lessspace.vim'
-let g:lessspace_enabled = 1
-let g:lessspace_normal = 1
-" let g:lessspace_whitelist = ['vim']
-" let g:lessspace_blacklist = ['*']
-
-Plug 'jiangmiao/auto-pairs'
-" let g:AutoPairs = { '(': ')' , '[': ']' , '{': '}', "'": "'", '"': '"'}
-let g:AutoPairsFlyMode = 1
+" Editing ================================================================= {{{
 
 Plug 'mattn/emmet-vim'
-autocmd! Filetype html,css :EmmetInstall
-
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
-
 Plug 'AndrewRadev/sideways.vim'
-nnoremap <M-h> :SidewaysLeft<cr>
-nnoremap <M-l> :SidewaysRight<cr>
-
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-if has('persistent_undo')
-    set undodir=~/.undodir/
-    set undofile
-endif
-
-" Plug 'vim-scripts/paredit.vim'
-" autocmd FileType * call PareditInitBuffer()
-" let g:paredit_mode=1
-
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'thirtythreeforty/lessspace.vim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-endwise'
@@ -174,52 +128,54 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'brooth/far.vim'
 Plug 'wellle/targets.vim'
-" Plug 'kana/vim-textobj-user'
 
 " }}}
 
 
-" Autocomletion, Linters, Snippets {{{
-" ============================================================
-" Autocompletion
+" Language Utilitys ======================================================= {{{
 Plug 'Valloric/YouCompleteMe', { 'do' : './install.py --clang-completer' }
 Plug 'ervandew/supertab'
-
-" Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
-" Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
-" Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
-
-" Linters
-" Plug 'neomake/neomake'
-" Plug 'metakirby5/codi.vim'
 Plug 'Shougo/neco-vim'
 Plug 'neitanod/vim-clevertab'
 Plug 'w0rp/ale'
-
-" Snippets
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
+Plug 'thinca/vim-quickrun'
+" Plug 'Shougo/deoplete.nvim' , { 'do' : ':UpdateRemotePlugins' }
+" Plug 'zchee/deoplete-clang' , { 'for' : 'cpp' }
+" Plug 'Shougo/neoinclude.vim' , { 'for' : 'cpp' }
+" Plug 'neomake/neomake'
+" Plug 'metakirby5/codi.vim'
 
 "}}}
 
 
-" Utility {{{
-" ============================================================
+" Utility  ================================================================ {{{
 Plug 'szw/vim-g'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-reload'
 Plug 'tpope/vim-fugitive'
+Plug 'Vector2025/vim-superman'
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_sign_column_always = 1
 
 Plug 'xolox/vim-session'
 let g:session_autosave = 'yes'
 let g:session_command_aliases = 1
+
+Plug 'jiangmiao/auto-pairs'
+let g:AutoPairsFlyMode = 1
+
+Plug 'christoomey/vim-system-copy'
+let g:system_copy#paste_command='xclip -sel clipboard -o'
+let g:system_copy#copy_command='xclip -sel clipboard'
+
 " }}}
 
 call plug#end()
 
 " }}}
+
 
 " Basic settings {{{
 
@@ -237,18 +193,18 @@ set hidden      " change buffer without saving
 set cursorline  " highlight line
 set title       " change the terminal title
 set guicursor=  " set block cursor
-set clipboard+=unnamedplus " use os clipboard
 set nolist
 set listchars=tab:▷⋅,trail:⋅,nbsp:⋅
 set nobackup
 set noswapfile
 set scrolloff=2
 set autochdir
-set nohlsearch
-set noincsearch
 set foldmethod=marker
 set shell=/bin/bash
 set laststatus=2
+
+set undodir=~/.undodir/
+set undofile
 
 " Tab settings
 set expandtab
@@ -257,6 +213,9 @@ set softtabstop=4
 set shiftwidth=4
 set shiftround
 
+set gdefault
+set nohlsearch
+set noincsearch
 set smartcase
 set ignorecase
 set wildignorecase
@@ -278,7 +237,14 @@ endfunction
 " }}}
 
 
-" Mappings {{{
+" Mapping {{{
+
+" Comands
+command! Root call s:root()
+
+" Toggle search highlight
+let g:hlstate=0
+command! ToggleHilight :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
 
 " Insert a single character
 nmap <leader>i i <esc>r
@@ -287,16 +253,19 @@ nmap <leader>i i <esc>r
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
 nmap <silent> <leader>rv :source $MYVIMRC<cr>
 
-" Execute last command | replay macro
-" nmap Q @:
+" replay macro{{{}}}
 nmap Q @q
 
 cmap w!! w !sudo tee % >/dev/null
-cmap qq q!
+cmap qq qa!
 
-" copy and paste a paragraph below
-" noremap cp yap<S-}>p
-" nmap cp :let @+ = expand("%:p")<cr>
+" Ex mode navigation
+cnoremap <c-a> <home>
+cnoremap <c-e> <end>
+cnoremap <c-w> <c-right>
+cnoremap <c-b> <c-left>
+cnoremap <c-j> <left>
+cnoremap <c-k> <right>
 
 " Easy column
 nnoremap ; :
@@ -304,9 +273,15 @@ nnoremap ; :
 " yank like pro
 nnoremap Y y$
 
+" Close quickfix or loclist
+nnoremap <leader>c :cclose<bar>lclose<cr>
+
+" Use tab to go to previous buffer
+nnoremap <tab> <c-^>
+
 " Better ESC
 inoremap jk <Esc>`^
-inoremap jj <Esc>`^
+cnoremap jk <C-c>
 
 " Faster navigation
 map J 5j
@@ -317,7 +292,7 @@ map L $
 " Insert line
 nnoremap o o<ESC>
 nnoremap O O<ESC>
-imap <c-o> <esc>oi
+inoremap <c-o> <esc>o
 
 " Insert semicolomn at end of line in insert mode
 inoremap ;; <end>A;
@@ -334,13 +309,34 @@ noremap 0 g0
 noremap ^ g^
 noremap $ g$
 
+" goto next/prev indentation level
+nnoremap <silent> gi :<c-u>call <SID>go_indent(v:count1, 1)<cr>
+nnoremap <silent> gpi :<c-u>call <SID>go_indent(v:count1, -1)<cr>
+
 " Align text blocks and keep them highlighted
 xnoremap <nowait> < <gv
 xnoremap <nowait> > >gv
 
-" Toggle search highlight
-let g:hlstate=0
-command! ToggleHilight :if (hlstate%2 == 0) \| nohlsearch \| else \| set hlsearch \| endif \| let hlstate=hlstate+1<cr>
+" Plugin Mapping
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+nnoremap <M-h> :SidewaysLeft<cr>
+nnoremap <M-l> :SidewaysRight<cr>
+
+nmap <silent> <leader>z :ZoomWin<cr>
+
+" Fzf
+nnoremap F :Files ~<cr>
+nnoremap <leader>f :Files <cr>
+nnoremap <leader>b :Buffers<cr>
+
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+vmap <Leader>l <Plug>(easymotion-bd-jk)
+nmap s <Plug>(easymotion-overwin-f2)
+map f <Plug>(easymotion-sl)
+map t <Plug>(easymotion-bd-tl)
 
 " }}}
 
@@ -425,10 +421,57 @@ let g:ale_keep_list_window_open = 0
 " }}}
 
 
+" Functions {{{
+
+function! s:go_indent(times, dir)
+  for l:_ in range(a:times)
+    let l:l = line('.')
+    let l:x = line('$')
+    let l:i = s:indent_len(getline(l:l))
+    let l:e = empty(getline(l:l))
+    while l:l >= 1 && l:l <=l:x
+      let l:line = getline(l:l + a:dir)
+      let l:l += a:dir
+      if s:indent_len(l:line) != l:i || empty(l:line) !=l:e
+        break
+      endif
+    endwhile
+    let l:l = min([max([1, l:l]), l:x])
+    execute 'normal! '. l:l .'G^'
+  endfor
+endfunction
+
+function! s:indent_len(str)
+  return type(a:str) == 1 ? len(matchstr(a:str, '^\s*')) : 0
+endfunction
+
+function! s:root()
+  let l:root = systemlist('git rev-parse --show-toplevel')[0]
+  if v:shell_error
+    echo 'Not in git repo'
+  else
+    execute 'lcd'l:root
+    echo 'Changed directory to: '.l:root
+  endif
+endfunction
+
+" }}}
+
+
 " Autocommands {{{
 
+autocmd! Filetype html,css :EmmetInstall
+
+" autocmd! User GoyoEnter nested call <SID>goyo_enter()
+" autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
+augroup lisp_files
+    autocmd!
+    autocmd FileType lisp,clojure,scheme RainbowParentheses
+augroup END
+
 " Mark the last editerd file
-augroup buf_leave
+augroup exit_marks
     autocmd!
     autocmd BufLeave *.cpp  normal! mC
     autocmd BufLeave *.h    normal! mH
@@ -460,6 +503,18 @@ fun! CursorPos()
         execute "normal! g'\""
     endif
 endfun
+
+" augroup collumnLimit
+"   autocmd!
+"   autocmd BufEnter,WinEnter,FileType scala,java
+"         \ highlight CollumnLimit ctermbg=DarkGrey guibg=DarkGrey
+"   let collumnLimit = 79 " feel free to customize
+"   let pattern =
+"         \ '\%<' . (collumnLimit+1) . 'v.\%>' . collumnLimit . 'v'
+"   autocmd BufEnter,WinEnter,FileType scala,java
+"         \ let w:m1=matchadd('CollumnLimit', pattern, -1)
+" augroup END
+
 " }}}
 
 
