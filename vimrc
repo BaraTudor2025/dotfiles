@@ -70,12 +70,14 @@ set ruler       " Info stanga jos, procente, line si coloana
 set cursorline
 set noshowmode
 set nowrap
-set guicursor+=a:blinkon0 " Dezactiveaza flicareala
 set history=1000 " istoric MARE
 set nocursorline   " Highligth current line
 set nohlsearch   " highlight searched words
 set noincsearch  " coloreaza cuvantul in timp real
 " set guifont="Monospace Regular":h13
+
+set guifont="Monospace Regular 14"
+set guioptions-=T
 
 set title       " change the terminal title
 set clipboard+=unnamedplus
