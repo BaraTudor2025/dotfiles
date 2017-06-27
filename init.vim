@@ -56,9 +56,7 @@ Plug 'maciej-ka/ZoomWin'
 Plug 'mhinz/vim-startify'
 Plug 'Yggdroot/indentLine'
 Plug 'ryanss/vim-hackernews'
-Plug 'edkolev/promptline.vim'
 " Plug 'pseewald/anyfold'
-Plug 'edkolev/tmuxline.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 
@@ -188,7 +186,7 @@ set noswapfile
 set scrolloff=2
 set autochdir
 set foldmethod=marker
-set shell=/bin/bash
+" set shell=/bin/bash
 set laststatus=2
 set lazyredraw
 
@@ -295,14 +293,14 @@ inoremap ;; <end>;
 inoremap ,, <end>,
 
 " Unimpaired
-nnoremap ]q :cnext<cr>
 nnoremap [q :cprev<cr>
-nnoremap ]l :lnext<cr>
+nnoremap ]q :cnext<cr>
 nnoremap [l :lprev<cr>
-nnoremap [b :bnext<cr>
-nnoremap ]b :bprev<cr>
-nnoremap [t :tabnext<cr>
-nnoremap ]t :tabprev<cr>
+nnoremap ]l :lnext<cr>
+nnoremap [b :bprev<cr>
+nnoremap ]b :bnext<cr>
+nnoremap [t :tabprev<cr>
+nnoremap ]t :tabnext<cr>
 nnoremap [e <Plug>(ale_previous_wrap)
 nnoremap ]e <Plug>(ale_next_wrap)
 
@@ -462,7 +460,6 @@ endfunction
 
 function! s:goyo_enter()
     autocmd! relative_num
-    autocmd! tmux_line
     :Limelight
 endfunction
 
@@ -472,7 +469,6 @@ function! s:goyo_leave()
         autocmd! InsertLeave * set relativenumber
     augroup END
     :Limelight!
-    :Tmuxline powerline
 endfunction
 " }}}
 
@@ -480,10 +476,6 @@ endfunction
 " Autocommands {{{
 
 autocmd! Filetype html,css :EmmetInstall
-
-augroup tmux_line
-    autocmd vim_enter VimEnter * Tmuxline powerline
-augroup END
 
 augroup goyo_events
     autocmd! User GoyoEnter nested call <SID>goyo_enter()

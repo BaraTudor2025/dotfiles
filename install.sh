@@ -1,11 +1,18 @@
 #!/bin/bash
-# asta este un file pentru a instala pachete pe un nou sistem linux
 
+# parola este ceruta dupa o saptamana
 git config --global credential.helper 'cache --timeout=604800'
+
+# opreste flicareala cursorului
+gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d \')/ cursor-blink-mode off
 
 PACKAGES=" tmux clang llvm neovim fish zsh tree ruby gem stack 
               haskell-platform cmake python-devel python3-develautomake gcc gcc-c++ kernel-devel
               gconf-editor gnome-tweak-tool npm"
+
+function zsh_extra_packages {
+    git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+}
 
 # git clone https://github.com/powerline/fonts.git
 # cd fonts
@@ -21,16 +28,10 @@ PACKAGES=" tmux clang llvm neovim fish zsh tree ruby gem stack
 
 # nmp install fls 
 
-if $0 == "" 
-then
-    echo " baga in plm numele package managerului si comanda "
-    echo " exemplu : apt-get install"
-else
-    INSTALLER_CMD = $0
-fi
-
 # incepe instalarea
-sudo $INSTALLER_CMD PACKAGES
+$INSTALLER PACKAGES
 
 sudo pip install --upgrade neovim
 sudo pip install vim-vint cmakelint yamllint
+
+echo "\n\nPls Restart"

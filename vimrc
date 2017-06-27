@@ -75,7 +75,8 @@ set history=1000 " istoric MARE
 set nocursorline   " Highligth current line
 set nohlsearch   " highlight searched words
 set noincsearch  " coloreaza cuvantul in timp real
-set guifont=Consolas:h13 " not working in terminal
+" set guifont="Monospace Regular":h13
+
 set title       " change the terminal title
 set clipboard+=unnamedplus
 set nolist
