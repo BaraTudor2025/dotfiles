@@ -16,34 +16,15 @@ augroup END
 
 " Autoinstall vim-plug {{{
 
-fun! InstallVimPlug()
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
-    endif
-endfun
-
-fun! InstallNeovimPlug()
-    if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-        silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
-    endif
-endfun
-
-" Always neovim
-if has('nvim') || 1
-    let s:plugs_dir = '~/.local/share/nvim/plugged'
-    call InstallNeovimPlug()
-else
-    let s:plugs_dir = '~/.vim/plugged'
-    call InstallVimPlug()
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+    silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd! vim_enter VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " }}}
 
-call plug#begin(s:plugs_dir)
+call plug#begin( '~/.local/share/nvim/plugged')
 
 " Colorschemes and Visuals ================================================ {{{
 Plug 'iCyMind/NeoSolarized'
@@ -74,7 +55,9 @@ let g:rainbow#pairs = [['(', ')']]
 Plug 'maciej-ka/ZoomWin'
 Plug 'mhinz/vim-startify'
 Plug 'Yggdroot/indentLine'
+Plug 'ryanss/vim-hackernews'
 Plug 'edkolev/promptline.vim'
+" Plug 'pseewald/anyfold'
 Plug 'edkolev/tmuxline.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
@@ -101,18 +84,20 @@ let g:hardtime_maxcount = 3
 let g:hardtime_allow_different_key = 1
 
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'vim-scripts/a.vim'
 Plug 'artnez/vim-wipeout'
 Plug 'vim-scripts/camelcasemotion'
-Plug 'tpope/vim-unimpaired'
+Plug 'rking/ag.vim'
+" Plug 'eugen0329/vim-esearch'
+Plug 'bronson/vim-visual-star-search'
 " Plug 'tpope/projectionist.vim'
+" Plug 'Chun-Yang/vim-action-ag'
+" Plug 'vim-scripts/a.vim'
 
 "}}}
 
 
 " Editing ================================================================= {{{
 
-Plug 'mattn/emmet-vim'
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
 Plug 'AndrewRadev/sideways.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
@@ -127,7 +112,34 @@ Plug 'rhysd/vim-clang-format', { 'for' : 'cpp' }
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'brooth/far.vim'
+Plug 'tommcdo/vim-exchange'
+Plug 'svermeulen/vim-easyclip'
 Plug 'wellle/targets.vim'
+Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment'
+Plug 'kana/vim-textobj-function'
+Plug 'michaeljsmith/vim-indent-object'
+
+" }}}
+
+
+" Utility  ================================================================ {{{
+Plug 'szw/vim-g'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-reload'
+Plug 'tpope/vim-fugitive'
+Plug 'Vector2025/vim-superman'
+Plug 'jiangmiao/auto-pairs'
+Plug 'airblade/vim-gitgutter'
+let g:gitgutter_sign_column_always = 1
+
+Plug 'xolox/vim-session'
+let g:session_autosave = 'yes'
+let g:session_command_aliases = 1
+
+Plug 'christoomey/vim-system-copy'
+let g:system_copy#paste_command='xclip -sel clipboard -o'
+let g:system_copy#copy_command='xclip -sel clipboard'
 
 " }}}
 
@@ -138,6 +150,7 @@ Plug 'ervandew/supertab'
 Plug 'Shougo/neco-vim'
 Plug 'neitanod/vim-clevertab'
 Plug 'w0rp/ale'
+Plug 'Shougo/echodoc.vim'
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
 Plug 'thinca/vim-quickrun'
@@ -148,29 +161,6 @@ Plug 'thinca/vim-quickrun'
 " Plug 'metakirby5/codi.vim'
 
 "}}}
-
-
-" Utility  ================================================================ {{{
-Plug 'szw/vim-g'
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-reload'
-Plug 'tpope/vim-fugitive'
-Plug 'Vector2025/vim-superman'
-Plug 'airblade/vim-gitgutter'
-let g:gitgutter_sign_column_always = 1
-
-Plug 'xolox/vim-session'
-let g:session_autosave = 'yes'
-let g:session_command_aliases = 1
-
-Plug 'jiangmiao/auto-pairs'
-let g:AutoPairsFlyMode = 1
-
-Plug 'christoomey/vim-system-copy'
-let g:system_copy#paste_command='xclip -sel clipboard -o'
-let g:system_copy#copy_command='xclip -sel clipboard'
-
-" }}}
 
 call plug#end()
 
@@ -185,12 +175,10 @@ set fileencoding=utf-8
 " filetype plugin indent on
 
 syntax on
-set ruler
 set wrap
 set noshowmode
 set history=1000
 set hidden      " change buffer without saving
-set cursorline  " highlight line
 set title       " change the terminal title
 set guicursor=  " set block cursor
 set nolist
@@ -202,6 +190,7 @@ set autochdir
 set foldmethod=marker
 set shell=/bin/bash
 set laststatus=2
+set lazyredraw
 
 set undodir=~/.undodir/
 set undofile
@@ -251,9 +240,9 @@ nmap <leader>i i <esc>r
 
 " Edit this file
 nmap <silent> <leader>ev :e $MYVIMRC<cr>
-nmap <silent> <leader>rv :source $MYVIMRC<cr>
+nmap <silent> <leader>rv :source $MYVIMRC<bar>:Tmuxline powerline<cr>
 
-" replay macro{{{}}}
+" Replay macro
 nmap Q @q
 
 cmap w!! w !sudo tee % >/dev/null
@@ -270,8 +259,11 @@ cnoremap <c-k> <right>
 " Easy column
 nnoremap ; :
 
-" yank like pro
+" Yank like pro
 nnoremap Y y$
+
+" Mark is gm
+nnoremap gm m
 
 " Close quickfix or loclist
 nnoremap <leader>c :cclose<bar>lclose<cr>
@@ -289,16 +281,32 @@ map K 5k
 map H ^
 map L $
 
+" Scroll
+nnoremap <M-d> <c-d>
+nnoremap <M-u> <c-u>
+
 " Insert line
 nnoremap o o<ESC>
 nnoremap O O<ESC>
 inoremap <c-o> <esc>o
 
 " Insert semicolomn at end of line in insert mode
-inoremap ;; <end>A;
-inoremap ,, <end>A,
+inoremap ;; <end>;
+inoremap ,, <end>,
 
-" use ctrl-e/a goto begining or end of line
+" Unimpaired
+nnoremap ]q :cnext<cr>
+nnoremap [q :cprev<cr>
+nnoremap ]l :lnext<cr>
+nnoremap [l :lprev<cr>
+nnoremap [b :bnext<cr>
+nnoremap ]b :bprev<cr>
+nnoremap [t :tabnext<cr>
+nnoremap ]t :tabprev<cr>
+nnoremap [e <Plug>(ale_previous_wrap)
+nnoremap ]e <Plug>(ale_next_wrap)
+
+" Use ctrl-e/a goto begining or end of line
 inoremap <c-e> <end>
 inoremap <c-a> <home>
 
@@ -327,9 +335,10 @@ nnoremap <M-l> :SidewaysRight<cr>
 nmap <silent> <leader>z :ZoomWin<cr>
 
 " Fzf
-nnoremap F :Files ~<cr>
-nnoremap <leader>f :Files <cr>
-nnoremap <leader>b :Buffers<cr>
+let g:fzf_command_prefix = 'Fzf'
+nnoremap F :FzfFiles ~<cr>
+nnoremap <leader>f :FzfFiles <cr>
+nnoremap <leader>b :FzfBuffers<cr>
 
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 nmap <Leader>l <Plug>(easymotion-overwin-line)
@@ -349,7 +358,6 @@ set background=dark
 " colo base16-oceanicnext
 " colo base16-onedark
 " let g:airline_theme = 'solarized'
-autocmd vim_enter VimEnter * Tmuxline powerline
 let g:gruvbox_contrast_light = 'medium'
 let g:gruvbox_contrast_dark = 'medium'
 colo gruvbox
@@ -384,7 +392,7 @@ highlight! link EasyMotionIncCursor         EasyMotionIncCursorDefault
 let g:ycm_python_binary_path = '/usr/bin/python3'
 
 " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = '<cr>'
+let g:UltiSnipsExpandTrigger = '<c-s>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 
@@ -411,9 +419,6 @@ let g:ale_set_quiqkfix = 0
 " let g:ale_lint_on_save = 'never'
 let g:ale_lint_on_text_changed = 'never'
 
-
-nmap <silent><M-k> <Plug>(ale_previous_wrap)
-nmap <silent><M-j> <Plug>(ale_next_wrap)
 
 let g:ale_open_list = 0
 let g:ale_keep_list_window_open = 0
@@ -455,6 +460,20 @@ function! s:root()
   endif
 endfunction
 
+function! s:goyo_enter()
+    autocmd! relative_num
+    autocmd! tmux_line
+    :Limelight
+endfunction
+
+function! s:goyo_leave()
+    augroup relative_num
+        autocmd! InsertEnter * set norelativenumber
+        autocmd! InsertLeave * set relativenumber
+    augroup END
+    :Limelight!
+    :Tmuxline powerline
+endfunction
 " }}}
 
 
@@ -462,8 +481,20 @@ endfunction
 
 autocmd! Filetype html,css :EmmetInstall
 
-" autocmd! User GoyoEnter nested call <SID>goyo_enter()
-" autocmd! User GoyoLeave nested call <SID>goyo_leave()
+augroup tmux_line
+    autocmd vim_enter VimEnter * Tmuxline powerline
+augroup END
+
+augroup goyo_events
+    autocmd! User GoyoEnter nested call <SID>goyo_enter()
+    autocmd! User GoyoLeave nested call <SID>goyo_leave()
+augroup END
+
+augroup CursorLineOnlyInActiveWindow
+    au!
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup END
 
 augroup lisp_files
     autocmd!
@@ -482,12 +513,12 @@ augroup END
 
 augroup buf_enter
     autocmd!
-    autocmd BufRead * call ReadOnlyKeys()
-    autocmd BufReadPost * call CursorPos()
+    autocmd BufRead * call s:ReadOnlyMapings()
+    autocmd BufReadPost * call s:CursorPos()
     autocmd BufRead * :normal zz
 augroup END
 
-function! ReadOnlyKeys()
+function! s:ReadOnlyMapings()
     if &readonly
         noremap <buffer><nowait>d <c-d>
         noremap <buffer>u <c-u>
@@ -498,7 +529,7 @@ function! ReadOnlyKeys()
     endif
 endfunction
 
-fun! CursorPos()
+fun! s:CursorPos()
     if line("'\"") > 0 && line ("'\"") <= line ('$')
         execute "normal! g'\""
     endif
